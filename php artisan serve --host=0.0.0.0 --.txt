@@ -1,0 +1,5 @@
+php artisan serve --host=0.0.0.0 --port=8000
+
+http://192.168.100.2:8000/login
+
+http://ipconfig:8000/login

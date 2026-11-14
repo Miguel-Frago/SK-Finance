@@ -1,0 +1,273 @@
+/* SK Finance - Admin pages.
+   Loaded after custom.css, only on the Admin side. It uses the same colour variables as the rest of the app
+   (--blue-600 = accent, --surface, --slate-*), so the Theme button changes these pages too. */
+
+/* ---------- Messages: the amber "warning" kind (success and error come from custom.css) ---------- */
+.toast-warning { --toast-accent: #d98a1f; color: #5f3d07; }
+
+/* ---------- Keyboard focus, the same on every clickable card and tab ---------- */
+.tab:focus-visible, .metric-link:focus-visible, .folder-card:focus-visible { outline: 2px solid var(--blue-600); outline-offset: 2px; }
+
+/* ---------- Page heading: title on the left, buttons on the right (they drop under it on a phone) ---------- */
+.page-head { align-items: flex-start; gap: .75rem 1.5rem; margin-bottom: 1.25rem; }
+.page-head > div:first-child { flex: 1 1 360px; min-width: 0; }
+.page-head .section-title { font-size: 1.5rem; letter-spacing: -.01em; }
+.page-head .muted { max-width: 66ch; margin-top: .3rem; }
+.page-head .muted code, .crumbs code { padding: .05rem .4rem; border-radius: 6px; background: var(--slate-100); font-size: .82rem; }
+.page-actions { flex: none; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+
+/* ---------- Search and filter bar ----------
+   One row of fields that share the same height; they grow to fill the row and wrap neatly on small screens.
+   The first field (the search box) is the widest. */
+.toolbar-card { padding: 1rem 1.15rem; margin-bottom: 1rem; }
+.toolbar-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: .8rem .9rem; }
+.toolbar-form .form-group { flex: 1 1 160px; min-width: 0; margin: 0; }
+.toolbar-form .form-group:first-of-type { flex: 2 1 240px; }
+.toolbar-form .form-group-date { flex: 1 1 150px; }
+.toolbar-form label { margin-bottom: .3rem; font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; }
+.toolbar-form input[type="text"],
+.toolbar-form input[type="email"],
+.toolbar-form input[type="number"],
+.toolbar-form input[type="date"],
+.toolbar-form select { width: 100%; height: 2.6rem; padding: 0 .8rem; }
+.toolbar-form select { padding-right: 2rem; }
+.toolbar-form .form-actions { flex: none; grid-column: auto; gap: .4rem; }
+.toolbar-form .btn { display: inline-flex; align-items: center; justify-content: center; height: 2.6rem; padding: 0 1.2rem; }
+/* the Activity log has five fields: three on the first row (search, barangay, what), then From, To and the buttons */
+.toolbar-form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.toolbar-form-grid .form-actions { align-self: end; }
+@media (max-width: 860px) { .toolbar-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) {
+    .toolbar-form-grid { grid-template-columns: 1fr; }
+    .toolbar-form .form-group, .toolbar-form .form-group:first-of-type, .toolbar-form .form-group-date { flex-basis: 100%; }
+    .toolbar-form .form-actions { width: 100%; }
+    .toolbar-form .form-actions .btn { flex: 1; }
+}
+
+/* ---------- Status tabs (with counts) ---------- */
+.tabs { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 1rem; }
+.tab {
+    display: inline-flex; align-items: center; gap: .55rem; padding: .4rem .5rem .4rem .95rem;
+    border-radius: 999px; border: 1px solid var(--slate-300); background: var(--surface);
+    color: var(--slate-700); font-size: .85rem; font-weight: 600; text-decoration: none;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.tab:hover { background: var(--slate-50); border-color: var(--slate-400); text-decoration: none; }
+.tab-count {
+    min-width: 1.7rem; padding: .08rem .5rem; border-radius: 999px; text-align: center;
+    background: var(--slate-100); color: var(--slate-700); font-size: .75rem; font-weight: 700;
+}
+.tab.is-active { background: var(--blue-600); border-color: var(--blue-600); color: #fff; box-shadow: 0 2px 8px rgba(21, 33, 60, .18); }
+.tab.is-active .tab-count { background: rgba(255, 255, 255, .24); color: #fff; }
+
+/* ---------- Lists and tables ---------- */
+.card-flush { padding: 0; overflow: hidden; }
+.card-flush .table-wrap { margin-top: 0; }
+.card-flush .table th:first-child, .card-flush .table td:first-child { padding-left: 1.25rem; }
+.card-flush .table th:last-child, .card-flush .table td:last-child { padding-right: 1.25rem; }
+.card-pad { padding: 1rem 1.25rem; }
+.table-admin th { padding: .75rem .9rem; }
+.table-admin td { padding: .8rem .9rem; vertical-align: top; }
+.table-admin tbody tr:last-child td { border-bottom: 0; }
+.cell-main { font-weight: 600; color: var(--slate-900); }
+.cell-sub { display: block; margin-top: .1rem; font-size: .78rem; color: var(--slate-600); }
+.empty-state { text-align: center; padding: 2.75rem 1rem; color: var(--slate-600); }
+.empty-state strong { display: block; margin-bottom: .25rem; color: var(--slate-900); font-size: 1rem; }
+.result-note { margin: 0; padding: .65rem 1.25rem; font-size: .8rem; color: var(--slate-600); border-top: 1px solid var(--slate-200); }
+.badge-soft { background: var(--slate-100); color: var(--slate-700); }
+.badge-info { background: #dbeafe; color: #1e40af; }
+
+/* the activity log table */
+.table-log .log-when { white-space: nowrap; font-weight: 600; color: var(--slate-900); }
+.table-log .log-when small { display: block; margin-top: .1rem; font-size: .76rem; font-weight: 400; color: var(--slate-600); }
+.log-what { display: flex; align-items: flex-start; gap: .6rem; }
+.log-what .badge { flex: none; min-width: 4.6rem; margin-top: .1rem; text-align: center; }
+.log-text { min-width: 0; overflow-wrap: anywhere; }
+.log-details { display: block; margin-top: .25rem; font-size: .78rem; line-height: 1.4; color: var(--slate-600); }
+
+/* ---------- Dashboard cards ----------
+   Colour tells the story at a glance (same idea as the Treasurer's cards):
+   orange = needs you, yellow = waiting, indigo = out with someone, green = healthy, grey = switched off, blue = coverage. */
+.metric-grid-admin { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+@media (min-width: 1000px) { .metric-grid-admin { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1700px) { .metric-grid-admin { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+@media (max-width: 480px)  { .metric-grid-admin { grid-template-columns: 1fr; } }
+
+.metric-pending { --accent: #eab308; --accent-text: #a16207; }   /* waiting for a check   yellow */
+.metric-ok      { --accent: #16a34a; --accent-text: #15803d; }   /* active                green  */
+.metric-off     { --accent: #94a3b8; --accent-text: var(--slate-700); }   /* switched off  grey   */
+
+.metric-link { position: relative; display: block; text-decoration: none; color: inherit; transition: transform .15s ease, box-shadow .15s ease; }
+.metric-link:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(21, 33, 60, .16); text-decoration: none; }
+.metric-link::after {
+    content: "\203A"; position: absolute; top: .8rem; right: 1rem; font-size: 1.5rem; line-height: 1;
+    color: var(--slate-400); transition: transform .15s ease, color .15s ease;
+}
+.metric-link:hover::after { color: var(--accent); transform: translateX(3px); }
+.metric-grid-admin .metric-card { display: flex; flex-direction: column; padding: 1rem 1.2rem 1.05rem; }
+.metric-grid-admin .metric-label { margin: 0; padding-right: 1.4rem; min-height: 2.6em; font-size: .74rem; font-weight: 700; letter-spacing: .05em; line-height: 1.3; }   /* always two lines tall, so every number starts at the same height */
+.metric-grid-admin .metric-value { margin-top: .35rem; font-size: 2.15rem; font-weight: 800; line-height: 1.1; }
+.metric-value small { font-size: .9rem; font-weight: 600; color: var(--slate-600); }
+.metric-hint { display: block; margin-top: .5rem; font-size: .78rem; line-height: 1.35; color: var(--slate-600); }
+.metric-grid-admin .metric-hint { min-height: 2.7em; }   /* two lines tall, so every card ends the same */
+
+.mail-banner {
+    display: flex; gap: .85rem; align-items: flex-start; margin-bottom: 1.25rem; padding: .9rem 1.1rem;
+    border-radius: 12px; border: 1px solid #f0c36b; border-left: 5px solid #d98a1f; background: #fff8e6; color: #5f3d07;
+}
+.mail-banner-icon {
+    flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+    background: #d98a1f; color: #fff; font-weight: 800; font-size: .9rem;
+}
+.mail-banner p { margin: .15rem 0 0; font-size: .88rem; line-height: 1.45; }
+.mail-banner a { color: inherit; font-weight: 700; text-decoration: underline; }
+
+.attention-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+.attention-grid .card { margin-bottom: 0; }
+.attn-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .6rem; }
+.attn-head .card-title { margin: 0; }
+.attn-list { list-style: none; margin: 0; padding: 0; }
+.attn-item { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .6rem 0; border-top: 1px dashed var(--slate-200); }
+.attn-item:first-child { border-top: 0; }
+.attn-who { min-width: 0; }
+.attn-who strong { display: block; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.attn-who span { font-size: .78rem; color: var(--slate-600); }
+.attn-item form { margin: 0; flex: none; }
+.attn-clear { margin: 0; padding: .5rem 0; font-size: .88rem; color: var(--slate-600); }
+.attn-clear::before { content: "\2713"; margin-right: .45rem; color: #2f9e5b; font-weight: 800; }
+.age-chip { display: inline-block; padding: .05rem .5rem; border-radius: 999px; font-size: .72rem; font-weight: 700; background: var(--slate-100); color: var(--slate-700); }
+.age-warn { background: #fef3c7; color: #92400e; }
+.age-bad  { background: #fee2e2; color: #991b1b; }
+
+.coverage { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.coverage-text { font-size: .9rem; color: var(--slate-700); }
+.coverage-text strong { font-size: 1.15rem; color: var(--slate-900); }
+.coverage-bar { flex: 1 1 220px; height: 10px; border-radius: 999px; background: var(--slate-200); overflow: hidden; }
+.coverage-bar > span { display: block; height: 100%; border-radius: 999px; background: var(--blue-600); }
+
+/* ---------- Detail pages (a request, an account) ---------- */
+.detail-hero { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+.detail-avatar {
+    flex: none; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--blue-600); color: #fff; font-size: 1.4rem; font-weight: 700;
+}
+.detail-hero .muted { margin: .25rem 0 0; }
+.facts-card .profile-facts { margin: .25rem 0 0; }
+.facts-card .profile-facts div:first-child { border-top: 0; }
+.action-card .card-title { margin-bottom: .2rem; }
+.action-card .muted { margin-top: 0; }
+.action-card textarea { min-height: 6rem; }
+.note-block { margin-top: 1rem; padding: .8rem 1rem; border-radius: 10px; background: var(--slate-50); border: 1px solid var(--slate-200); }
+.note-block h4 { margin: 0 0 .3rem; font-size: .85rem; color: var(--slate-700); }
+.note-block p { margin: 0; white-space: pre-line; font-size: .88rem; color: var(--slate-700); }
+.alert-inline { font-size: .88rem; }
+
+/* ---------- Barangays ---------- */
+.summary-pills { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .8rem; margin-bottom: 1rem; }
+.summary-pill {
+    padding: .7rem 1rem; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow);
+    border-left: 4px solid var(--slate-400); font-size: .82rem; color: var(--slate-600);
+}
+.summary-pill strong { display: block; font-size: 1.4rem; font-weight: 800; color: var(--slate-900); line-height: 1.2; }
+.pill-ok   { border-left-color: #16a34a; }
+.pill-warn { border-left-color: #f97316; }
+.pill-info { border-left-color: var(--blue-600); }
+
+/* ---------- Profile ---------- */
+.mail-status { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin-bottom: .9rem; font-size: .88rem; }
+.mail-dot { width: 10px; height: 10px; border-radius: 50%; background: #2f9e5b; flex: none; }
+.mail-dot.is-off { background: #d98a1f; }
+.mail-status code { padding: .1rem .4rem; border-radius: 6px; background: var(--slate-100); font-size: .82rem; }
+
+/* ---------- This month's log, and the Log archive ---------- */
+.month-banner {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-bottom: 1rem; padding: .85rem 1.1rem;
+    border-radius: 12px; background: var(--surface); border: 1px solid var(--slate-200); border-left: 5px solid var(--blue-600); box-shadow: var(--shadow);
+}
+.month-banner-text { flex: 1 1 340px; min-width: 0; display: flex; align-items: center; gap: .85rem; font-size: .87rem; line-height: 1.45; color: var(--slate-700); }
+.month-chip { flex: none; padding: .3rem .85rem; border-radius: 999px; background: var(--blue-600); color: #fff; font-size: .85rem; font-weight: 700; white-space: nowrap; }
+.month-banner-actions { flex: none; display: flex; flex-wrap: wrap; gap: .5rem; }
+@media (max-width: 560px) {
+    .month-banner-text { flex-direction: column; align-items: flex-start; gap: .5rem; }
+    .month-banner-actions { width: 100%; }
+    .month-banner-actions .btn { flex: 1; text-align: center; }
+}
+
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-bottom: .6rem; font-size: .82rem; color: var(--slate-600); }
+.crumbs a { font-weight: 600; }
+.crumbs [aria-hidden] { color: var(--slate-400); }
+.crumbs strong { color: var(--slate-900); }
+
+.folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+.folder-card {
+    display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem; border-radius: 12px;
+    background: var(--surface); box-shadow: var(--shadow); border: 1px solid transparent; color: inherit; text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.folder-card:hover { transform: translateY(-2px); border-color: var(--blue-600); box-shadow: 0 8px 22px rgba(21, 33, 60, .16); text-decoration: none; }
+.folder-icon { flex: none; width: 54px; height: 44px; color: var(--blue-600); }
+.folder-name { display: block; font-size: 1.5rem; font-weight: 800; line-height: 1.1; color: var(--slate-900); }
+.folder-meta { display: block; margin-top: .25rem; font-size: .8rem; line-height: 1.4; color: var(--slate-600); }
+
+.file-list { list-style: none; margin: 0; padding: 0; }
+.file-row { display: flex; align-items: center; gap: 1rem; padding: .9rem 1.25rem; border-top: 1px solid var(--slate-200); }
+.file-row:first-child { border-top: 0; }
+.file-row:hover { background: var(--slate-50); }
+.file-row.is-year { background: var(--slate-50); }
+.file-row.is-pending { background: transparent; }
+.arch-icon { flex: none; width: 30px; height: 36px; color: var(--blue-600); }
+.file-main { flex: 1 1 auto; min-width: 0; }
+.file-title { display: block; font-weight: 700; color: var(--slate-900); }
+.file-title .badge { margin-left: .4rem; vertical-align: .08em; }
+.file-meta { display: block; margin-top: .15rem; font-size: .78rem; line-height: 1.45; color: var(--slate-600); overflow-wrap: anywhere; }
+.file-meta code { padding: .05rem .4rem; border-radius: 6px; background: var(--slate-100); font-size: .76rem; }
+.file-actions { flex: none; display: flex; gap: .4rem; }
+@media (max-width: 640px) {
+    .file-row { flex-wrap: wrap; }
+    .file-main { flex-basis: calc(100% - 50px); }
+    .file-actions { width: 100%; }
+    .file-actions .btn { flex: 1; text-align: center; }
+}
+
+/* ---------- Printing a list (Barangays, Activity log, a saved month) ---------- */
+.print-only { display: none; }
+@media print {
+    .print-only { display: block; margin-bottom: .6rem; }
+    .print-only h2 { margin: 0; font-size: 15px; }
+    .print-only p { margin: .15rem 0 0; font-size: 11px; color: #444; }
+    .card-flush { border: 0; padding: 0; box-shadow: none; }
+    .table th, .table td { padding: .3rem .4rem; }
+    .result-note, .summary-pills, .mail-banner, .month-banner { display: none !important; }
+    .badge { border: 1px solid #999; background: none !important; color: #000 !important; }
+}
+
+/* ---------- "New updates" button: shown only when the page could not refresh itself because you are typing ---------- */
+.live-notice {
+    position: fixed; left: 50%; bottom: 1.25rem; transform: translateX(-50%); z-index: 250;
+    padding: .6rem 1.1rem; border: 0; border-radius: 999px; cursor: pointer;
+    background: var(--blue-600); color: #fff; font-size: .88rem; font-weight: 600; font-family: inherit;
+    box-shadow: 0 10px 28px rgba(21, 33, 60, .3);
+}
+.live-notice:hover { background: var(--blue-700); }
+
+/* Show / hide eye on password boxes (public/js/password-toggle.js) */
+.pw-field { position: relative; }
+.pw-field input { padding-right: 2.9rem; }
+.pw-eye { position: absolute; top: 50%; right: .35rem; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; width: 2.2rem; height: 2.2rem; padding: 0; border: 0; border-radius: 6px; background: transparent; color: var(--slate-600); cursor: pointer; }
+.pw-eye:hover { color: var(--slate-900); background: rgba(100, 116, 139, .12); }
+.pw-eye:focus-visible { outline: 2px solid var(--blue-600); outline-offset: 1px; }
+
+/* Profile page: both columns end at the same line (the last card of each column stretches to fill) */
+.admin-grid-even { align-items: stretch; }
+.admin-grid-even > div { display: flex; flex-direction: column; }
+.admin-grid-even > div > .card:last-child { flex: 1 1 auto; }
+
+/* Admin SK Guide: choose the boy or the girl guide */
+.guide-who { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem; padding: .55rem .8rem; background: var(--surface); border-bottom: 1px solid var(--slate-200); flex: none; }
+.guide-who-label { margin-right: .2rem; font-size: .78rem; font-weight: 700; color: var(--slate-600); }
+.guide-who-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .2rem .75rem .2rem .25rem; border-radius: 999px; border: 1px solid var(--slate-300); background: var(--surface); color: var(--slate-700); font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; }
+.guide-who-btn img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; object-position: 50% 20%; background: #e8e3f4; }
+.guide-who-btn:hover { border-color: var(--blue-600); }
+.guide-who-btn:focus-visible { outline: 2px solid var(--blue-600); outline-offset: 2px; }
+.guide-who-btn[aria-checked="true"] { background: var(--blue-600); border-color: var(--blue-600); color: #fff; }
+.guide-who-state { margin-left: auto; font-size: .75rem; color: var(--slate-600); }

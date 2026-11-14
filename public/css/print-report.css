@@ -1,0 +1,144 @@
+/* =====================================================================================
+   Printed reports (the "print" section of each page).
+   - On screen the report is hidden.
+   - On paper only the report prints; the app screen (sidebar, forms, pagination, "Showing 1-9 of 9") does not.
+   - Nothing has a fixed width in mm or px: everything is a percentage, so the same report fits
+     Letter and A4 (the paper size is whatever the print dialog says: @page size is "auto").
+   ===================================================================================== */
+
+.print-report { display: none; }
+
+@page { size: auto; margin: 12mm 12mm 16mm; }
+
+@media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    html, body { background: #fff !important; height: auto !important; overflow: visible !important; }
+    body { margin: 0; color: #111827; font-size: 10px; line-height: 1.35; }
+
+    /* the app screen does not print on pages that have a report */
+    body.has-print-report .screen-only,
+    body.has-print-report .topbar,
+    body.has-print-report .sidebar,
+    body.has-print-report .toast-stack,
+    body.has-print-report .sk-guide-fab,
+    body.has-print-report .guide-float { display: none !important; }
+
+    body.has-print-report .app-shell,
+    body.has-print-report .main { display: block !important; width: auto; min-height: 0; margin: 0; padding: 0; }
+
+    .print-report { display: block; width: 100%; max-width: 100%; margin: 0; padding: 0; box-sizing: border-box; }
+    .print-report *, .print-report *::before, .print-report *::after { box-sizing: border-box; }
+
+    /* page footer (browsers that support page margin boxes; others simply skip it) */
+    @page {
+        @bottom-left  { content: "SK Financial Tracking System · Sangguniang Kabataan, Cantoria No. 4"; font: 8px sans-serif; color: #64748b; }
+        @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8px sans-serif; color: #64748b; }
+    }
+
+    /* ---------- title strip + filters ---------- */
+    .pr-title { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; margin: 0 0 8px; }
+    .pr-title h1 { margin: 0; font-size: 17px; color: var(--navy-900, #1b2b4e); line-height: 1.15; }
+    .pr-title p { margin: 2px 0 0; color: #475569; font-size: 10px; }
+    .pr-title .pr-asof { text-align: right; color: #475569; font-size: 9px; white-space: nowrap; }
+
+    .pr-filters { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 0 0 8px; padding: 5px 7px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 9px; }
+    .pr-filters b { color: var(--navy-900, #1b2b4e); }
+    .pr-filters span { white-space: nowrap; }
+
+    /* ---------- cards ---------- */
+    .pr-kpis { display: grid; gap: 6px; margin: 0 0 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .pr-kpis.k4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .pr-kpis.k5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .pr-kpi { border: 1px solid #cbd5e1; border-left: 4px solid var(--accent, #3a68c8); border-radius: 4px; padding: 5px 7px; background: #fff; break-inside: avoid; min-width: 0; }
+    .pr-kpi span { display: block; font-size: 8.5px; text-transform: uppercase; letter-spacing: .03em; color: #475569; }
+    .pr-kpi strong { display: block; font-size: 13px; line-height: 1.25; color: #0f172a; overflow-wrap: anywhere; }
+    .pr-kpi small { display: block; font-size: 8.5px; color: #64748b; }
+    .pr-kpi.is-total   { border-left-color: #2563eb; }
+    .pr-kpi.is-alloc   { border-left-color: #16a34a; }
+    .pr-kpi.is-unalloc { border-left-color: #111827; }
+    .pr-kpi.is-spent   { border-left-color: #dc2626; }
+    .pr-kpi.is-left    { border-left-color: #f97316; }
+    .pr-kpi.is-bank    { border-left-color: #0284c7; }
+    .pr-kpi.is-cash    { border-left-color: #65a30d; }
+    .pr-kpi.is-neutral { border-left-color: #64748b; }
+    .pr-kpi.is-over strong { color: #b91c1c; }
+
+    .pr-card { border: 1px solid #cbd5e1; border-radius: 5px; padding: 7px 9px; margin: 0 0 8px; background: #fff; break-inside: avoid; }
+    .pr-card h2 { margin: 0 0 5px; font-size: 11px; color: var(--navy-900, #1b2b4e); border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; }
+    .pr-card h2 small { font-weight: 400; color: #64748b; font-size: 9px; margin-left: 4px; }
+    .pr-card.is-flow { break-inside: auto; }      /* a card that holds a long table may continue on the next page */
+    .pr-note { margin: 4px 0 0; color: #475569; font-size: 9px; }
+    .pr-empty { margin: 4px 0; color: #64748b; font-style: italic; }
+
+    .pr-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 0 8px; align-items: stretch; }
+    .pr-pair .pr-card { margin: 0; }
+
+    /* ---------- charts ---------- */
+    .pr-donut { display: flex; align-items: center; gap: 8px; }
+    .pr-donut-svg { flex: 0 0 38%; width: 38%; max-width: 120px; height: auto; }
+    .pr-donut-top { font: 700 5.2px sans-serif; fill: #0f172a; }
+    .pr-donut-bottom { font: 3px sans-serif; fill: #64748b; }
+    .pr-legend { flex: 1; list-style: none; margin: 0; padding: 0; min-width: 0; }
+    .pr-legend li { display: flex; align-items: baseline; gap: 4px; padding: 1.5px 0; font-size: 9px; border-bottom: 1px dotted #e2e8f0; }
+    .pr-legend i, .pr-split-legend i, .pr-lines-legend i { display: inline-block; flex: none; width: 7px; height: 7px; border-radius: 2px; margin-right: 3px; }
+    .pr-legend-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .pr-legend-val { white-space: nowrap; font-weight: 600; }
+    .pr-legend-pct { width: 30px; text-align: right; color: #64748b; }
+
+    .pr-bars { display: flex; flex-direction: column; gap: 4px; }
+    .pr-bar-row { display: grid; grid-template-columns: 34% minmax(0, 1fr) auto; gap: 6px; align-items: center; font-size: 9px; }
+    .pr-bar-label { overflow-wrap: anywhere; }
+    .pr-bar-label small { display: block; color: #64748b; font-size: 8px; }
+    .pr-bar-track { height: 9px; background: #e2e8f0; border-radius: 5px; overflow: hidden; display: block; }
+    .pr-bar-fill { display: block; height: 100%; border-radius: 5px; }
+    .pr-bar-val { text-align: right; font-weight: 600; white-space: nowrap; min-width: 62px; }
+
+    .pr-split { display: flex; height: 15px; border-radius: 7px; overflow: hidden; background: #e2e8f0; }
+    .pr-split span { display: block; height: 100%; color: #fff; font-size: 8px; font-weight: 700; line-height: 15px; text-align: center; overflow: hidden; }
+    .pr-split .pr-split-empty { width: 100%; color: #475569; }
+    .pr-split-legend { display: flex; flex-wrap: wrap; gap: 3px 12px; margin-top: 4px; font-size: 9px; }
+
+    .pr-cols { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; height: 110px; align-items: end; }
+    .pr-col { display: flex; flex-direction: column; align-items: center; height: 100%; min-width: 0; }
+    .pr-col-val { font-size: 7px; height: 9px; color: #334155; white-space: nowrap; }
+    .pr-col-track { flex: 1; width: 100%; display: flex; align-items: flex-end; border-bottom: 1px solid #94a3b8; }
+    .pr-col-bar { display: block; width: 100%; border-radius: 2px 2px 0 0; }
+    .pr-col-label { font-size: 8px; color: #475569; padding-top: 2px; }
+
+    .pr-lines { display: block; width: 100%; height: auto; }
+    .pr-axis { font: 8px sans-serif; fill: #64748b; }
+    .pr-lines-legend { display: flex; gap: 12px; font-size: 9px; margin-top: 2px; }
+
+    .pr-meter { display: block; margin-bottom: 2px; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; min-width: 28px; }
+    .pr-meter span { display: block; height: 100%; }
+
+    /* ---------- tables ---------- */
+    .pr-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
+    .pr-table th, .pr-table td { padding: 3px 4px; border-bottom: 1px solid #e2e8f0; vertical-align: top; overflow-wrap: anywhere; word-break: break-word; text-align: left; }
+    .pr-table thead { display: table-header-group; }     /* headings repeat on every printed page */
+    .pr-table tfoot { display: table-row-group; }
+    .pr-table thead th { background: var(--navy-900, #1b2b4e); color: #fff; font-size: 8.5px; text-transform: uppercase; letter-spacing: .02em; border-bottom: 0; }
+    .pr-table tbody tr:nth-child(even) td { background: #f8fafc; }
+    .pr-table tr { break-inside: avoid; page-break-inside: avoid; }
+    .pr-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .pr-table .ctr { text-align: center; }
+    .pr-table td small { display: block; color: #64748b; font-size: 8px; }
+    .pr-table tr.is-cat td { background: #e8edf8 !important; font-weight: 700; }
+    .pr-table tr.is-total td, .pr-table tr.is-open td { background: #e8edf8 !important; font-weight: 700; border-top: 1.5px solid var(--navy-900, #1b2b4e); }
+    .pr-table .over { color: #b91c1c; font-weight: 700; }
+    .pr-table .lvl-low { color: #a16207; font-weight: 700; }
+    .pr-table .lvl-medium { color: #c2410c; font-weight: 700; }
+    .pr-table .lvl-high { color: #b91c1c; font-weight: 700; }
+    .pr-flag { display: inline-block; background: #fee2e2; color: #b91c1c; border-radius: 3px; padding: 0 3px; font-size: 7.5px; font-weight: 700; text-transform: uppercase; }
+    .pr-table .indent-1 { padding-left: 12px; }
+    .pr-table .indent-2 { padding-left: 22px; }
+    .pr-table .indent-3 { padding-left: 32px; }
+    .pr-table .indent-4 { padding-left: 42px; }
+
+    /* ---------- signatures ---------- */
+    .pr-sign { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 18px; break-inside: avoid; }
+    .pr-sign div { text-align: center; font-size: 9px; }
+    .pr-sign .pr-sign-role { color: #475569; text-align: left; margin-bottom: 20px; }
+    .pr-sign .pr-sign-line { border-top: 1px solid #111827; padding-top: 2px; font-weight: 700; }
+    .pr-sign .pr-sign-title { color: #475569; }
+}

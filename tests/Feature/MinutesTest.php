@@ -166,12 +166,15 @@ it('shows the Secretary her drafts and the final minutes', function () {
         ->assertSee('Draft one')->assertSee('Final one')->assertSee('Write minutes');
 });
 
-it('shows everyone else only the final minutes', function () {
+it('shows the Chairman and Kagawad only the final minutes, and blocks the Treasurer', function () {
     mnMinute(['title' => 'Draft one']);
     $final = mnMinute(['title' => 'Final one', 'status' => 'final']);
     $draft = MeetingMinute::where('title', 'Draft one')->first();
 
-    foreach (['treasurer', 'chairman', 'kagawad'] as $role) {
+    $this->actingAs(mnUser('treasurer'))->get('/minutes')->assertForbidden();
+    $this->actingAs(mnUser('treasurer'))->get(route('minutes.show', $final))->assertForbidden();
+
+    foreach (['chairman', 'kagawad'] as $role) {
         $user = mnUser($role);
 
         $this->actingAs($user)->get('/minutes')->assertOk()

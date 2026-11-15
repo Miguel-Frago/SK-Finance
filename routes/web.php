@@ -22,7 +22,6 @@ use App\Http\Controllers\BarangaySettingsController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FundMovementController;
-use App\Http\Controllers\JoinController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\MinutesController;
@@ -99,6 +98,13 @@ Route::middleware(['auth', EnsureAccountActive::class, EnsurePasswordChanged::cl
 
     // --- Report generation: the chairman can edit this part too (filters, names and signatures) ---
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+
+    // --- Separate SK Fund allocation and bank-transfer tracking ---
+    Route::get('/sk-fund', [\App\Http\Controllers\SkFundController::class, 'index'])->name('sk-fund.index');
+    Route::middleware('can:manage')->group(function () {
+        Route::post('/sk-fund/allocation', [\App\Http\Controllers\SkFundController::class, 'saveAllocation'])->name('sk-fund.allocation');
+        Route::post('/sk-fund/transfers', [\App\Http\Controllers\SkFundController::class, 'storeTransfer'])->name('sk-fund.transfers.store');
+    });
     Route::put('/reports/signatories', [ReportController::class, 'saveSignatories'])->middleware(['can:edit-report', 'throttle:30,1'])->name('reports.signatories');
 
     // --- In-app messaging: chats, groups, announcements, files. JSON only; the Messages box in the top bar uses these ---
@@ -116,8 +122,10 @@ Route::middleware(['auth', EnsureAccountActive::class, EnsurePasswordChanged::cl
     Route::get('/reconciliation', [ReconciliationController::class, 'index'])->name('reconciliation.index');
     Route::post('/reconciliation', [ReconciliationController::class, 'store'])->middleware(['can:reconcile', 'throttle:20,1'])->name('reconciliation.store');
 
-    // --- Minutes of meetings: the SK Secretary writes them; everyone in the barangay reads the final ones ---
-    Route::get('/minutes', [MinutesController::class, 'index'])->name('minutes.index');
+    // --- Minutes: the Treasurer is excluded; Chairman, Secretary and Kagawad may read ---
+    Route::middleware('can:view-minutes')->group(function () {
+        Route::get('/minutes', [MinutesController::class, 'index'])->name('minutes.index');
+        });
     Route::middleware('can:manage-minutes')->group(function () {
         Route::get('/minutes/create', [MinutesController::class, 'create'])->name('minutes.create');
         Route::post('/minutes', [MinutesController::class, 'store'])->name('minutes.store');
@@ -132,9 +140,6 @@ Route::middleware(['auth', EnsureAccountActive::class, EnsurePasswordChanged::cl
     // Treasurer (and the SK chairman while the treasurer allows it): anything that adds, edits or deletes data
     // =====================================================================================
     Route::middleware('can:manage')->group(function () {
-
-        // --- Share sign-up: big QR codes for the Create account and Sign in pages ---
-        Route::get('/join', [JoinController::class, 'show'])->name('join.show');
 
         // --- Budget & allocation ---
         Route::prefix('budget')->name('budget.')->group(function () {

@@ -171,7 +171,13 @@ class User extends Authenticatable
             || ($this->isChairman() && (bool) $this->portal()?->chairman_can_edit);
     }
 
-    /** Only the SK Secretary writes the minutes of meetings (everyone in the barangay can read the final ones). */
+    /** The Treasurer is excluded from minutes; Chairman, Secretary and Kagawad may read them. */
+    public function canViewMinutes(): bool
+    {
+        return $this->isChairman() || $this->isSecretary() || $this->isKagawad();
+    }
+
+    /** Only the SK Secretary writes the minutes of meetings. */
     public function canManageMinutes(): bool
     {
         return $this->isSecretary();

@@ -55,6 +55,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('print', fn (User $user) => $user->canPrint());
 
         // The SK Secretary writes the minutes of meetings; the Secretary and the Chairman can print them.
+        Gate::define('view-minutes', fn (User $user) => $user->canViewMinutes());
         Gate::define('manage-minutes', fn (User $user) => $user->canManageMinutes());
         Gate::define('print-minutes', fn (User $user) => $user->canPrintMinutes());
 

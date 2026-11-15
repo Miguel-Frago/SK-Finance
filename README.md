@@ -11,12 +11,16 @@ Laravel 12 · SQLite (MySQL is possible later) · Blade · plain CSS (no framewo
 | Role | Places per barangay | Finance | Reports and signatures | Minutes of meetings |
 |---|---|---|---|---|
 | **Admin** (SK Federation President) | none (municipality level) | **no access** | n/a | n/a |
-| **SK Treasurer** | 1 | add, edit, void everything; asks for quarter locks; bank reconciliation | yes | read |
+| **SK Treasurer** | 1 | add, edit, void everything; asks for quarter locks; bank reconciliation | yes | no access |
 | **SK Chairman** | 1 | view; edit only while the Treasurer's switch is on; approves quarter locks | yes | read, print |
 | **SK Secretary** | 1 | view only | no | **write, edit, print** |
 | **SK Kagawad** | up to 7 | view only | no | read |
 
 People join by **asking for access** (name, Gmail, barangay, position). The Admin approves, a one-time secret code is emailed (valid 7 days), the person creates the account with it, and the Admin approves once more. At the end of a term the Admin switches the old account off (its records stay) and approves the new person.
+
+## SK Fund allocation and transfers
+
+The separate **SK Fund Allocation & Transfers** module records each barangay's annual 10% SK Fund allocation, optional monthly allocation, and individual transfers to the SK account. Transfers are classified separately as **10% SK Fund** or **SK Surplus**. The page calculates the amount transferred from each source and the remaining 10% SK Fund balance. Records are barangay-scoped and year-specific; they do not alter the existing bank/cash Fund Movements ledger. Only the Treasurer (and the Chairman while finance editing is enabled) can record allocations and transfers; other authorized barangay roles can view them.
 
 ## Keeping the money records honest
 
@@ -61,7 +65,7 @@ php artisan storage:link
 
 Create the first Admin: set `SK_ADMIN_NAME`, `SK_ADMIN_EMAIL` and `SK_ADMIN_PASSWORD` in `.env`, then run `php artisan db:seed --class=AdminSeeder`. The Admin chooses their own password at the first sign-in. If nobody can sign in: `php artisan sk:reset-admin`.
 
-Open `http://sk-finance.test` (barangay sign-in), `/request-access` (ask to join) and `/admin/login` (Admin). With `MAIL_MAILER=log`, emails (including secret codes) are written to `storage/logs/laravel.log`. For real emails see the Gmail notes in `.env.example`.
+Open `http://sk-finance.test` (barangay sign-in), `/request-access` (ask to join) and `/admin/login` (Admin). Personal QR Access ID sign-in remains available at `/qr/{token}`. With `MAIL_MAILER=log`, emails (including secret codes) are written to `storage/logs/laravel.log`. For real emails see the Gmail notes in `.env.example`.
 
 ### The scheduler (important)
 

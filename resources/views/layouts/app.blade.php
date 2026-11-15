@@ -25,7 +25,8 @@
         ['label' => 'Bank Reconciliation', 'route' => 'reconciliation.index', 'match' => 'reconciliation.*'],
         ['label' => 'Quarter Lock',       'route' => 'period-locks.index',   'match' => 'period-locks.*'],
         ['label' => 'Report Generation',  'route' => 'reports.index',        'match' => 'reports.*'],
-        ['label' => 'Minutes of Meetings', 'route' => 'minutes.index',       'match' => 'minutes.*'],
+        ['label' => 'SK Fund Allocation & Transfers', 'route' => 'sk-fund.index', 'match' => 'sk-fund.*'],
+        ['label' => 'Minutes of Meetings', 'route' => 'minutes.index',       'match' => 'minutes.*', 'minutes' => true],
     ];
 @endphp
 
@@ -45,6 +46,9 @@
 
         <nav class="sidebar-nav">
             @foreach ($nav as $item)
+                @if (($item['minutes'] ?? false) && !auth()->user()->canViewMinutes())
+                    @continue
+                @endif
                 @if (Route::has($item['route']))
                     <a href="{{ route($item['route']) }}"
                        class="nav-link {{ request()->routeIs($item['match']) ? 'active' : '' }}">
@@ -55,10 +59,6 @@
                 @endif
             @endforeach
 
-            {{-- QR codes of the Create account and Sign in pages, to show a room full of phones --}}
-            @can('manage')
-                <a href="{{ route('join.show') }}" class="nav-link {{ request()->routeIs('join.*') ? 'active' : '' }}">Share sign-up (QR)</a>
-            @endcan
         </nav>
 
         <div class="sidebar-footer">

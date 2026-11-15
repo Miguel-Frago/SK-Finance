@@ -19,6 +19,7 @@ class MinutesController extends Controller
     public function index(Request $request): View
     {
         $user = $request->user();
+        abort_unless($user->canViewMinutes(), 403);
 
         $filters = $request->validate([
             'q'      => ['nullable', 'string', 'max:100'],
@@ -54,6 +55,7 @@ class MinutesController extends Controller
 
     public function show(Request $request, MeetingMinute $minute): View
     {
+        abort_unless($request->user()->canViewMinutes(), 403);
         $this->authorizeRead($request->user(), $minute);
 
         return view('minutes.show', ['minute' => $minute]);
@@ -119,7 +121,7 @@ class MinutesController extends Controller
     /** Drafts are the Secretary's own: everyone else gets a 404, as if they did not exist. */
     private function authorizeRead(User $user, MeetingMinute $minute): void
     {
-        abort_if(! $user->canManageMinutes() && ! $minute->isFinal(), 404);
+        abort_if(! $user->canViewMinutes() || (! $user->canManageMinutes() && ! $minute->isFinal()), 404);
     }
 
     private function validated(Request $request): array

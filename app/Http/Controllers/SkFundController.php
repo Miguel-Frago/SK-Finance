@@ -40,6 +40,11 @@ class SkFundController extends Controller
         ]);
 
         $allocation = SkFundAllocation::firstOrNew(['year' => $data['year']]);
+        $alreadyTransferred = (float) $allocation->transfers()->where('source', 'sk_fund')->sum('amount');
+        if ((float) $data['allocation_amount'] < $alreadyTransferred) {
+            return back()->withErrors(['allocation_amount' => 'The allocation cannot be lower than the amount already transferred.'])->withInput();
+        }
+
         $allocation->fill($data);
         $allocation->save();
 
@@ -61,6 +66,10 @@ class SkFundController extends Controller
         ]);
 
         $allocation = SkFundAllocation::findOrFail($data['sk_fund_allocation_id']);
+        if (\Illuminate\Support\Carbon::parse($data['transfer_date'])->year !== (int) $allocation->year) {
+            return back()->withErrors(['transfer_date' => "The transfer date must fall within CY {$allocation->year}."])->withInput();
+        }
+
         if ($data['source'] === 'sk_fund') {
             $transferred = (float) $allocation->transfers()->where('source', 'sk_fund')->sum('amount');
             if ($transferred + (float) $data['amount'] > (float) $allocation->allocation_amount) {
